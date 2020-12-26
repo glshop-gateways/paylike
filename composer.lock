@@ -1,0 +1,59 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "fcf9456a3f8bf9d237606d3fbdc4b9f5",
+    "packages": [
+        {
+            "name": "paylike/php-api",
+            "version": "1.0.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/paylike/php-api.git",
+                "reference": "bcdf66a17ff3c595952d02de250264e3d2cb307d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/paylike/php-api/zipball/bcdf66a17ff3c595952d02de250264e3d2cb307d",
+                "reference": "bcdf66a17ff3c595952d02de250264e3d2cb307d",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Paylike\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ionut Calara",
+                    "email": "ionut.calara@gmail.com"
+                }
+            ],
+            "description": "PHP SDK to communicate with the Paylike HTTP API",
+            "time": "2020-09-08T09:05:27+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
+}
