@@ -1,0 +1,17 @@
+<script>
+var paylike = Paylike("{pub_key}");
+function SHOP_paylike_{order_id}() {
+    paylike.popup({
+        currency: "{cur_code}",
+        amount: {order_total},
+        custom: {
+            order_id: "{order_id}"
+        },
+    }, function( err, res ){
+        if (err) {
+            return console.log(err);
+        }
+        location.href = "{ipn_url}&txn_id=" + res.transaction.id;
+    });
+}
+</script>

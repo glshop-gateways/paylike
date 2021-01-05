@@ -13,19 +13,21 @@
  */
 namespace Shop\Gateways\paylike;
 use Shop\Currency;
-use Shop\Cart;
-use Shop\Config;
 
 
 /**
  * Class for Square payment gateway.
  * @package shop
  */
-class paylike extends \Shop\Gateway
+class Gateway extends \Shop\Gateway
 {
     /** Internal API client to facilitate reuse.
      * @var object */
     private $_api_client = NULL;
+
+    /** Gateway version.
+     * @var string */
+    protected $version = '0.0.1';
 
 
     /**
@@ -45,7 +47,6 @@ class paylike extends \Shop\Gateway
         // These are used by the parent constructor, set them first.
         $this->gw_name = 'paylike';
         $this->gw_desc = 'Paylike';
-        //$this->postback_url = Config::get('url') . '/ipn/ipn.php';
 
         // Set default values for the config items, just to be sure that
         // something is set here.
@@ -125,27 +126,18 @@ class paylike extends \Shop\Gateway
         $ipn_params = array(
             'order_id' => $Cart->getOrderID(),
         );
-        $js_str = '<script>
-	    var paylike = Paylike("' . $this->getConfig('pub_key') . '");
-            function SHOP_paylike_' . $Cart->getOrderID() . '() {
-                paylike.popup({
-		    currency: "' . $Cur->getCode() . '",
-                    amount: ' . $Cart->getTotal() * 100 . ',
-                    custom: {
-                        order_id: "' . $Cart->getOrderiD() . '"
-                    },
-    	        }, function( err, res ){
-                    if (err) {
-                        return console.log(err);
-                    }
-                    location.href = "' . $this->getIpnUrl($ipn_params) .
-                        '&txn_id=" + res.transaction.id;
-                    //console.log(res.transaction.id);
-            	    //alert("Thank you!");
-	        });
-            }
-	</script>';
-        return $js_str;
+        $T = new \Template(__DIR__ . '/templates');
+        $T->set_file('js', 'checkout.thtml');
+        $T->set_var(array(
+            'pub_key' => $this->getConfig('pub_key'),
+            'ipn_url' => $this->getIpnUrl($ipn_params),
+            'cur_code' => $Cart->getCurrency()->getCode(),
+            'order_total' => $Cart->getTotal() * 100,
+            'order_id' => $Cart->getOrderId(),
+        ) );
+        $T->parse('output', 'js');
+        $btn = $T->finish($T->get_var('output'));
+        return $btn;
     }
 
 
@@ -193,6 +185,18 @@ class paylike extends \Shop\Gateway
 
 
     /**
+     * Make the API classes available. May be needed for reports.
+     *
+     * @return  object  $this
+     */
+    public function loadSDK()
+    {
+        require_once __DIR__ . '/vendor/autoload.php';
+        return $this;
+    }
+
+
+    /**
      * Get the API client object.
      *
      * @return  object      SquareClient object
@@ -201,7 +205,7 @@ class paylike extends \Shop\Gateway
     {
         if ($this->_api_client === NULL) {
             // Import the API SDK
-            require_once __DIR__ . '/vendor/autoload.php';
+            $this->loadSDK();
             $this->_api_client = new \Paylike\Paylike($this->getConfig('prv_key'));
         }
         return $this->_api_client;
