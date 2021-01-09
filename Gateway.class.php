@@ -1,12 +1,11 @@
 <?php
 /**
- * Gateway implementation for Paylike (https://paylike.io)
+ * Gateway implementation for Paylike (https://paylike.io).
  *
  * @author      Lee Garner <lee@leegarner.com>
  * @copyright   Copyright (c) 2020 Lee Garner <lee@leegarner.com>
  * @package     shop
- * @version     v1.3.0
- * @since       v1.3.0
+ * @version     v0.0.1
  * @license     http://opensource.org/licenses/gpl-2.0.php
  *              GNU Public License v2 or later
  * @filesource
@@ -16,18 +15,30 @@ use Shop\Currency;
 
 
 /**
- * Class for Square payment gateway.
+ * Class for Paylike payment gateway.
  * @package shop
  */
 class Gateway extends \Shop\Gateway
 {
+    /** Gateway version.
+     * @const string */
+    protected const VERSION = '0.0.1';
+
+    /** Gateway ID.
+     * @var string */
+    protected $gw_name = 'paylike';
+
+    /** Gateway provider. Company name, etc.
+     * @var string */
+    protected $gw_provider = 'Paylike';
+
+    /** Gateway service description.
+     * @var string */
+    protected $gw_desc = 'Paylike';
+
     /** Internal API client to facilitate reuse.
      * @var object */
     private $_api_client = NULL;
-
-    /** Gateway version.
-     * @var string */
-    protected $version = '0.0.1';
 
 
     /**
@@ -44,12 +55,7 @@ class Gateway extends \Shop\Gateway
             'PHP', 'TWD', 'THB', 'MYR', 'RUB',
         );
 
-        // These are used by the parent constructor, set them first.
-        $this->gw_name = 'paylike';
-        $this->gw_desc = 'Paylike';
-
-        // Set default values for the config items, just to be sure that
-        // something is set here.
+        // Set up config field definitions.
         $this->cfgFields = array(
             'prod' => array(
                 'pub_key'   => 'password',
@@ -63,7 +69,7 @@ class Gateway extends \Shop\Gateway
                 'test_mode' => 'checkbox',
             ),
         );
-        // Set defaults
+        // Set config defaults
         $this->config = array(
             'global' => array(
                 'test_mode'         => '1',
@@ -123,14 +129,14 @@ class Gateway extends \Shop\Gateway
             $have_js = true;
         }
 
-        $ipn_params = array(
+        $wh_params = array(
             'order_id' => $Cart->getOrderID(),
         );
         $T = new \Template(__DIR__ . '/templates');
         $T->set_file('js', 'checkout.thtml');
         $T->set_var(array(
             'pub_key' => $this->getConfig('pub_key'),
-            'ipn_url' => $this->getIpnUrl($ipn_params),
+            'hook_url' => $this->getWebhookUrl($wh_params),
             'cur_code' => $Cart->getCurrency()->getCode(),
             'order_total' => $Cart->getTotal() * 100,
             'order_id' => $Cart->getOrderId(),
@@ -199,7 +205,7 @@ class Gateway extends \Shop\Gateway
     /**
      * Get the API client object.
      *
-     * @return  object      SquareClient object
+     * @return  object      Paylike API object
      */
     private function _getApiClient()
     {
@@ -264,6 +270,18 @@ class Gateway extends \Shop\Gateway
     public function getCheckoutJS($Cart)
     {
         return 'SHOP_paylike_' . $Cart->getOrderId() . '(); return false;';
+    }
+
+
+    /**
+     * Check that a valid config has been set for the environment.
+     *
+     * @return  boolean     True if valid, False if not
+     */
+    public function hasValidConfig()
+    {
+        return !empty($this->getConfig('pub_key')) &&
+            !empty($this->getConfig('prv_key'));
     }
 
 }

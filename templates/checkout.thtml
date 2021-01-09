@@ -11,7 +11,7 @@ function SHOP_paylike_{order_id}() {
         if (err) {
             return console.log(err);
         }
-        location.href = "{ipn_url}&txn_id=" + res.transaction.id;
+        location.href = "{hook_url}&txn_id=" + res.transaction.id;
     });
 }
 </script>
