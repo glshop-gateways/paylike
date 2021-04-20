@@ -22,7 +22,7 @@ class Gateway extends \Shop\Gateway
 {
     /** Gateway version.
      * @const string */
-    protected const VERSION = '0.0.1';
+    public const VERSION = '0.1.0';
 
     /** Gateway ID.
      * @var string */
@@ -138,7 +138,7 @@ class Gateway extends \Shop\Gateway
             'pub_key' => $this->getConfig('pub_key'),
             'hook_url' => $this->getWebhookUrl($wh_params),
             'cur_code' => $Cart->getCurrency()->getCode(),
-            'order_total' => $Cart->getTotal() * 100,
+            'order_total' => $Cart->getBalanceDue() * 100,
             'order_id' => $Cart->getOrderId(),
         ) );
         $T->parse('output', 'js');
