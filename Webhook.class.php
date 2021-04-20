@@ -103,8 +103,6 @@ class Webhook extends \Shop\Webhook
      * notifies the buyer and administrator
      *
      * @uses    self::Verify()
-     * @uses    BaseIPN::isUniqueTxnId()
-     * @uses    BaseIPN::handlePurchase()
      */
     public function Dispatch()
     {
@@ -125,7 +123,7 @@ class Webhook extends \Shop\Webhook
                         ->setComment('Webhook ' . $this->getID())
                         ->setOrderID($this->getOrderID())
                         ->Save();
-                    if ($this->handlePurchase($this->Order)) {
+                    if ($this->handlePurchase()) {
                         COM_refresh(Config::get('url') . '?thanks=' . $this->gw_name);
                     }
                 }
