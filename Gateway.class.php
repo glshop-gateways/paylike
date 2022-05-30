@@ -21,8 +21,8 @@ use Shop\Currency;
 class Gateway extends \Shop\Gateway
 {
     /** Gateway version.
-     * @const string */
-    public const VERSION = '0.1.0';
+     * @var string */
+    protected $VERSION = '0.1.0';
 
     /** Gateway ID.
      * @var string */
