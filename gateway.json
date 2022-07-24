@@ -1,7 +1,8 @@
 {
-	"name": "paylike",
-	"repo": {
-		"type": "github",
-		"project_id": "paylike"
-	}
+  "name": "paylike",
+  "version": "0.1.0",
+  "repo": {
+    "type": "github",
+    "project_id": "paylike"
+  }
 }

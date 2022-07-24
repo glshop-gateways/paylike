@@ -20,10 +20,6 @@ use Shop\Currency;
  */
 class Gateway extends \Shop\Gateway
 {
-    /** Gateway version.
-     * @var string */
-    protected $VERSION = '0.1.0';
-
     /** Gateway ID.
      * @var string */
     protected $gw_name = 'paylike';
